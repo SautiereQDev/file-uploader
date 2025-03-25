@@ -1,0 +1,37 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main, 5-create-production-pipeline ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Deploy essential files with rsync
+        run: |
+          rsync -avz --delete \
+            --include='src/***' \
+            --include='package.json' \
+            --include='package-lock.json' \
+            --include='tsconfig.json' \
+            --include='ecosystem.config.cjs' \
+            --exclude='*' \
+            ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DEPLOY_PATH }}
+
+      - name: Install dependencies
+        run: ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.VPS_DEPLOY_PATH }} && source /root/.nvm/nvm.sh && npm install"
+
+      - name: Start or reload PM2 process
+        run: ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.VPS_DEPLOY_PATH }} && source /root/.nvm/nvm.sh && npm run build && pm2 start ecosystem.config.cjs --update-env"
