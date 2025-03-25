@@ -1,0 +1,35 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main, 5-create-production-pipeline ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Deploy essential files with rsync
+        run: |
+          rsync -avz --delete \
+            --include='src/***' \
+            --include='package.json' \
+            --include='package-lock.json' \
+            --include='tsconfig.json' \
+            --exclude='*' \
+            ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DEPLOY_PATH }}
+      - name : Install dependencies
+        run: ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.VPS_DEPLOY_PATH }} && npm install"
+
+      - name: Update the pm2 process
+        run : ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.VPS_DEPLOY_PATH }} && pm2 update "files-uploader""
