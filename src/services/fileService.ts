@@ -1,7 +1,7 @@
 import * as fs from "fs";
       import * as path from "path";
 
-      export class ImageService {
+      export class FileService {
         /**
          * Processing after upload (database saving, etc.)
          */
