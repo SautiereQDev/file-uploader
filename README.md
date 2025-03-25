@@ -66,7 +66,7 @@ The application includes a comprehensive logging system that tracks all server i
 - `NODE_ENV=production`: Sets logging to production mode (less verbose)
 
 ## License
-This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE.md) file for details
 
 ## Author
 - **Quentin Sautière** [@SautiereQDev](https://github.com/SautiereQDev)
