@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { ImageService } from "../services/imageService";
+import {Request, Response, NextFunction} from "express";
+import {ImageService} from "../services/imageService";
+import {LoggerService} from "../services/loggerService";
 import path from "path";
 
 export class ImageController {
@@ -10,29 +11,65 @@ export class ImageController {
   ) {
     const basePath = process.env.UPLOAD_PATH ?? "/var/www/cdn";
 
+    LoggerService.debug('Upload request received', {
+      contentType: req.headers['content-type'],
+      fileInfo: req.file ? {
+        originalname: req.file.originalname,
+        size: req.file.size
+      } : 'No file'
+    });
+
     try {
-      // `req.file` est ajouté par Multer si la route utilise `uploadMiddleware.single(...)`
       if (!req.file) {
-        return res.status(400).json({ message: "Aucun fichier reçu." });
+        LoggerService.warn('Upload attempt with no file');
+        return res.status(400).json({message: "Please provide a file to upload."});
       }
 
-      // Récupérer le chemin de destination depuis le corps de la requête
-      let destinationPath = req.body.path;
-      if (destinationPath) {
-        // Utiliser le chemin absolu pour le dossier CDN
-        destinationPath = path.join(basePath, destinationPath);
+      // Validate and sanitize destination path
+      let destinationPath: string | undefined = undefined;
+      if (req.body.path) {
+        // Sanitize path and remove path traversal sequences
+        const sanitizedPath = path.normalize(req.body.path).replace(/^(\.\.(\/|\\|$))+/, '');
+        const proposedPath = path.join(basePath, sanitizedPath);
+
+        // Verify the path is within the base directory
+        if (proposedPath.startsWith(path.resolve(basePath))) {
+          destinationPath = proposedPath;
+          LoggerService.debug('Destination path', {path: destinationPath});
+        } else {
+          LoggerService.warn('Path traversal attempt detected', {path: req.body.path});
+          return res.status(400).json({message: "Invalid destination path."});
+        }
       }
 
-      const fileInfo = await ImageService.processUploadedFile(
-        req.file,
-        destinationPath
-      );
+      if (!destinationPath) {
+        LoggerService.warn('Upload attempt with no destination path');
+        return res.status(400).json({message: "Please provide a destination path."});
+      }
+
+      // Sanitize filename
+      const safeFilename = path.basename(req.file.originalname).replace(/[^a-zA-Z0-9_.-]/g, '_');
+      const safeFile = {
+        ...req.file,
+        originalname: safeFilename
+      };
+
+      const fileInfo = await ImageService.processUploadedFile(safeFile, destinationPath);
+
+      LoggerService.info('File successfully uploaded', {
+        filename: fileInfo.filename,
+        path: fileInfo.path,
+        size: fileInfo.size
+      });
+
       return res.status(201).json({
-        message: "Fichier uploadé avec succès !",
+        message: "File successfully uploaded !",
         data: fileInfo,
       });
     } catch (error) {
-      console.error("Erreur lors de l'upload:", error);
+      LoggerService.error('Error during upload', {
+        error: error instanceof Error ? error.message : String(error)
+      });
       next(error);
     }
   }

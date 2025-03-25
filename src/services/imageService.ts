@@ -1,40 +1,40 @@
 import * as fs from "fs";
-import * as path from "path";
+      import * as path from "path";
 
-export class ImageService {
-  /**
-   * Traitement après l'upload (sauvegarde en base de données, etc.)
-   */
-  public static async processUploadedFile(
-    file: Express.Multer.File,
-    destinationPath?: string
-  ): Promise<{ path: string; filename: string; size: number }> {
-    // Si un chemin de destination est spécifié, déplacer le fichier
-    if (destinationPath) {
-      // Créer le répertoire de destination s'il n'existe pas
-      const fullDestPath = path.join(process.cwd(), destinationPath);
-      if (!fs.existsSync(fullDestPath)) {
-        fs.mkdirSync(fullDestPath, { recursive: true });
+      export class ImageService {
+        /**
+         * Processing after upload (database saving, etc.)
+         */
+        public static async processUploadedFile(
+          file: Express.Multer.File,
+          destinationPath?: string
+        ): Promise<{ path: string; filename: string; size: number }> {
+          // If a destination path is specified, move the file
+          if (destinationPath) {
+            // Create the destination directory if it doesn't exist
+            const fullDestPath = path.join(process.cwd(), destinationPath);
+            if (!fs.existsSync(fullDestPath)) {
+              fs.mkdirSync(fullDestPath, { recursive: true });
+            }
+
+            // Full path of the destination file
+            const destFilePath = path.join(fullDestPath, file.filename);
+
+            // Move the file
+            fs.renameSync(file.path, destFilePath);
+
+            return {
+              path: path.join(destinationPath, file.filename), // Relative path for the API
+              filename: file.filename,
+              size: file.size,
+            };
+          }
+
+          // If no path specified, return the file information as is
+          return {
+            path: file.path, // Absolute path where the file is stored
+            filename: file.filename, // Name of the saved file
+            size: file.size,
+          };
+        }
       }
-
-      // Chemin complet du fichier de destination
-      const destFilePath = path.join(fullDestPath, file.filename);
-
-      // Déplacer le fichier
-      fs.renameSync(file.path, destFilePath);
-
-      return {
-        path: path.join(destinationPath, file.filename), // Chemin relatif pour l'API
-        filename: file.filename,
-        size: file.size,
-      };
-    }
-
-    // Si aucun chemin spécifié, retourner les informations du fichier tel quel
-    return {
-      path: file.path, // Chemin absolu où le fichier est stocké
-      filename: file.filename, // Nom du fichier sauvegardé
-      size: file.size,
-    };
-  }
-}
