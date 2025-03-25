@@ -1,9 +1,9 @@
 import {Request, Response, NextFunction} from "express";
-import {ImageService} from "../services/imageService";
+import {FileService} from "../services/fileService";
 import {LoggerService} from "../services/loggerService";
 import path from "path";
 
-export class ImageController {
+export class FileController {
   public static async uploadImage(
     req: Request,
     res: Response,
@@ -54,7 +54,7 @@ export class ImageController {
         originalname: safeFilename
       };
 
-      const fileInfo = await ImageService.processUploadedFile(safeFile, destinationPath);
+      const fileInfo = await FileService.processUploadedFile(safeFile, destinationPath);
 
       LoggerService.info('File successfully uploaded', {
         filename: fileInfo.filename,
