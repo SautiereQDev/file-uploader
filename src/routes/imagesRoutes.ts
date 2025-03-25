@@ -1,16 +1,16 @@
-import { Router } from "express";
-import { ImageController } from "../controllers/ImageController";
-import { uploadMiddleware } from "../middlewares/uploadMiddleware";
+import {Router} from "express";
+import {ImageController} from "../controllers/ImageController";
+import {uploadMiddleware} from "../middlewares/uploadMiddleware";
 
 const router = Router();
 
 /**
- * Route pour uploader un fichier
- * - "file" correspond au nom du champ attendu dans le formulaire
- * - "path" est le chemin de destination (optionnel)
+ * Route to upload a file
+ * — “file” is the expected field name in the form
+ * — “path” is the destination path (optional)
  */
 router.post(
-  "/upload",
+  "/",
   uploadMiddleware.single("file"),
   ImageController.uploadImage
 );
