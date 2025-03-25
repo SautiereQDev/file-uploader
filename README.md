@@ -21,7 +21,7 @@ Nodejs server to upload files on a cdn, entirely  made with Typescript.
 3. Run the project on dev mode `start:dev`
 
 ## Files depositoring
-1. make a request on `POST /upload` on `multipart/form-data` body with a `file` field and `path`filed
+1. make a request on `POST /files-uploader/upload` on `multipart/form-data` body with a `file` field and `path`filed
 
 2. The server return a json with the current structure : 
 ```json
@@ -42,6 +42,28 @@ in case of success and an erorr message in case of failure.
 - [Typescript](https://www.typescriptlang.org/)
 - [Expressjs](https://expressjs.com/fr/)
 - [Multer](https://github.com/expressjs/multer)
+
+## Logging System
+
+The application includes a comprehensive logging system that tracks all server interactions:
+
+### Log Types
+- HTTP request logs: Records all incoming HTTP requests
+- Application logs: Tracks application activities and errors
+- File upload logs: Detailed information about file uploads
+
+### Log Files
+- `logs/combined.log`: Contains all log entries
+- `logs/error.log`: Contains only error-level logs
+
+### Log Levels
+- `error`: Critical errors requiring immediate attention
+- `warn`: Warnings that should be addressed
+- `info`: General information about application operation
+- `debug`: Detailed debugging information (dev mode only)
+
+### Environment Variables
+- `NODE_ENV=production`: Sets logging to production mode (less verbose)
 
 ## License
 This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
