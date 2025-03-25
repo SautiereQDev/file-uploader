@@ -30,7 +30,7 @@ jobs:
             --exclude='*' \
             ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DEPLOY_PATH }}
 
-     - name: Install dependencies
+      - name: Install dependencies
        run: ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.VPS_DEPLOY_PATH }} && $(which npm) install"
 
       - name: Start or reload PM2 process
