@@ -14,6 +14,10 @@ Nodejs server to upload files on a cdn, entirely  made with Typescript.
 - `PORT` : Port on which the server will run
 - `UPLOAD_PATH` : Path where images will be stored
 
+## Routes
+- `POST /files-uploader` : Upload a file on the server
+- `GET /files-uploader` : Get informations about api
+
 ### Installation
 
 1. Clone the repository: [Repo](https://github.com/SautiereQDev/image-uploader)
@@ -66,7 +70,7 @@ The application includes a comprehensive logging system that tracks all server i
 - `NODE_ENV=production`: Sets logging to production mode (less verbose)
 
 ## License
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE.md) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details
 
 ## Author
 - **Quentin Sautière** [@SautiereQDev](https://github.com/SautiereQDev)
