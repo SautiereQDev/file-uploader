@@ -23,3 +23,26 @@ export function isPortAvailable(port: number): Promise<boolean> {
     server.listen(port);
   });
 }
+
+/**
+ * Finds an available port starting from a base port
+ * @param startPort - Starting port (default 3000)
+ * @param maxAttempts - Maximum number of attempts (default 100)
+ * @returns Available port found
+ */
+export async function findAvailablePort(startPort = 3000, maxAttempts = 100): Promise<number> {
+  let port = startPort;
+  let attempts = 0;
+
+  while (attempts < maxAttempts) {
+    const isAvailable = await isPortAvailable(port);
+    if (isAvailable) {
+      return port;
+    }
+
+    port++;
+    attempts++;
+  }
+
+  throw new Error(`No available port found starting after ${maxAttempts} attempts`);
+}
