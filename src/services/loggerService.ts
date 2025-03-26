@@ -2,6 +2,10 @@ import * as winston from 'winston';
 import * as path from 'path';
 import * as fs from 'fs';
 
+interface LogInfo extends winston.Logform.TransformableInfo {
+  httpLog?: string | unknown;
+}
+
 export class LoggerService {
   private static logger: winston.Logger;
 
@@ -18,18 +22,18 @@ export class LoggerService {
     );
 
     // Filtre pour exclure les erreurs (4xx et 5xx)
-    const excludeHttpErrorFilter = winston.format((info) => {
+    const excludeHttpErrorFilter = winston.format((info: LogInfo) => {
       // Si c'est un log HTTP et contient un code 4xx ou 5xx, ne pas l'inclure dans main.log
-      if (info.httpLog && /\s[45]\d{2}\s/.test(info.httpLog)) {
+      if (info.httpLog && typeof info.httpLog === 'string' && /\s[45]\d{2}\s/.test(info.httpLog)) {
         return false;
       }
       return info;
     });
 
 // Filtre pour inclure uniquement les erreurs (4xx et 5xx)
-    const includeOnlyHttpErrorFilter = winston.format((info) => {
+    const includeOnlyHttpErrorFilter = winston.format((info: LogInfo) => {
       // Si c'est un log HTTP avec code 4xx ou 5xx, ou un log niveau error, l'inclure dans error.log
-      if ((info.httpLog && /\s[45]\d{2}\s/.test(info.httpLog)) || info.level === 'error') {
+      if ((info.httpLog && typeof info.httpLog === 'string' && /\s[45]\d{2}\s/.test(info.httpLog)) || info.level === 'error') {
         return info;
       }
       return false;

@@ -1,5 +1,5 @@
 // middleware/errorHandler.ts
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 interface AppError extends Error {
   statusCode?: number;
