@@ -5,6 +5,5 @@ module.exports = {
 		env: {
 			NODE_ENV: 'production'
 		},
-		interpreter: '/root/.bun/bin/bun'
 	}]
 };

@@ -1,10 +1,12 @@
-import express, { Application, Request, Response } from "express";
-import imageRoutes from "./routes/imagesRoutes";
+import express, { Application } from "express";
+import imageRoutes from "./routes/filesRoutes";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
 import {LoggerService} from "./services/loggerService";
-import {errorLogger, requestLogger} from "./middlewares/logginMidleware";
+import { requestLogger} from "./middlewares/logginMidleware";
+import {errorHandler} from "./middlewares/errorHandler";
+import {AppError} from "./utils/AppError";
 
 export const app: Application = express();
 
@@ -25,11 +27,23 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/files-uploader", imageRoutes);
 
-app.use(errorLogger);
+// Handler all other routes
+app.all('*', (req, _res, next) => {
+  next(new AppError(`Route ${req.originalUrl} introuvable`, 404));
+});
 
-app.use((err: Error, _: Request, res: Response) => {
-  console.error("Error:", err.message);
-  res.status(500).json({ error: err.message });
+app.use(errorHandler);
+
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION! 💥 Arrêt du serveur...');
+  console.error(err.name, err.message);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION! 💥 Arrêt du serveur...');
+  console.error(err);
+  process.exit(1);
 });
 
 export default app;

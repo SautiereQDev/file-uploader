@@ -1,0 +1,22 @@
+{
+  "name": "File Upload API",
+  "version": "1.0.0",
+  "author": "Quentin Sautiere (SautiereQDev)",
+  "message": "This is an api to upload files on a server",
+  "endpoints": [
+    {
+      "method": "POST",
+      "type": "multipart/form-data",
+      "body": {
+        "file": "file to upload, required",
+        "path": "destination path, optional"
+      }
+    },
+    {
+      "method": "GET",
+      "type": "application/json"
+    }
+  ],
+  "licence": "Apache-2.0 - All rights reserved",
+  "contact": "contact@quentinsautiere.com"
+}
