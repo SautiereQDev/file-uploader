@@ -7,6 +7,7 @@
     "moduleResolution": "NodeNext",
     "noEmit": false, // Permettre la génération
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
 }
