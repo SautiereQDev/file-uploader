@@ -1,10 +1,10 @@
 {
-  "name": "api-patate-mag",
-  "version": "1.0.0",
+  "name": "file-uploader",
+  "version": "1.2.1",
   "scripts": {
     "build": "tsc",
     "start:dev": "pm2 start ecosystem.config.cjs --env development --interpreter $(which bun)",
-    "start:prod": "pm2 start ecosystem.config.cjs --env production",
+    "start:prod": "pm2 start ecosystem.config.cjs --env production --interpreter $(which bun)",
     "start": "npm run start:prod"
   },
   "dependencies": {
@@ -24,8 +24,6 @@
     "@types/winston": "^2.4.4",
     "dotenv": "^16.4.7",
     "pm2": "^5.4.3",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.5"
   }
 }

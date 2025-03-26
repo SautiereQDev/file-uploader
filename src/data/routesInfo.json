@@ -1,7 +1,7 @@
 {
   "name": "File Upload API",
   "version": "1.0.0",
-  "author": "Quentin Sautiere (SautiereQDev)",
+  "author": "Quentin Sautière (SautiereQDev)",
   "message": "This is an api to upload files on a server",
   "endpoints": [
     {
