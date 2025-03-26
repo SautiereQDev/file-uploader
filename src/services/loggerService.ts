@@ -104,4 +104,12 @@ export class LoggerService {
   public static error(message: string, meta?: any): void {
     LoggerService.getLogger().error(message, meta);
   }
+
+  public static warn(message: string, meta?: any): void {
+    LoggerService.getLogger().warn(message, meta);
+  }
+
+  public static debug(message: string, meta?: any): void {
+    LoggerService.getLogger().debug(message, meta);
+  }
 }
